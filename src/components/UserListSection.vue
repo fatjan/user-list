@@ -21,7 +21,13 @@
         <div v-else-if="error" class="error-message">
           {{ error }}
         </div>
-        <div v-else v-for="user in sortedUsers" :key="user.email" class="user-row">
+        <div
+          v-else
+          v-for="user in sortedUsers"
+          :key="user.email"
+          class="user-row"
+          @click="openModal(user)"
+        >
           <div class="user-cell">{{ formatDate(user.registered.date) }}</div>
           <div class="user-cell">{{ `${user.name.first} ${user.name.last}` }}</div>
           <div class="user-cell">{{ user.gender }}</div>
@@ -30,6 +36,8 @@
         </div>
       </div>
     </div>
+
+    <UserDetails :user="selectedUser" :isVisible="isModalVisible" @close="closeModal" />
 
     <div class="refresh-container">
       <button class="btn btn-refresh" @click="refreshPage()">
@@ -41,8 +49,13 @@
 </template>
 
 <script>
+import UserDetails from './UserDetails.vue'
+
 export default {
   name: 'UserListSection',
+  components: {
+    UserDetails,
+  },
   data() {
     return {
       sortKey: 'name',
@@ -53,11 +66,14 @@ export default {
         { key: 'gender', label: 'Gender' },
         { key: 'country', label: 'Country' },
         { key: 'email', label: 'Email' },
+        { key: 'cell', label: 'Show Details' },
       ],
       page: 1,
       users: [],
       loading: false,
       error: null,
+      selectedUser: { name: 'Test User', email: 'test@example.com' },
+      isModalVisible: false,
     }
   },
   computed: {
@@ -141,6 +157,13 @@ export default {
         this.page = 1
       }
       this.fetchUsers()
+    },
+    openModal(user) {
+      this.selectedUser = user
+      this.isModalVisible = true
+    },
+    closeModal() {
+      this.isModalVisible = false
     },
   },
   mounted() {
