@@ -1,0 +1,45 @@
+<template>
+  <div class="bg-gray-50 min-h-screen">
+    <!-- Header -->
+    <header class="bg-white shadow-md py-4 px-6 flex items-center justify-between">
+      <div class="flex items-center space-x-2">
+        <img :src="logoImage" alt="Kiratech-Logo" class="h-8" />
+      </div>
+      <div class="flex items-center space-x-4">
+        <button class="text-gray-600"><i class="icon-bell"></i></button>
+        <button class="text-gray-600"><i class="icon-settings"></i></button>
+        <button class="text-gray-600"><i class="icon-logout"></i></button>
+      </div>
+    </header>
+
+    <!-- Profile Section -->
+    <ProfileSection />
+
+    <!-- Table Section -->
+    <TableSection />
+  </div>
+</template>
+
+<script>
+import ProfileSection from '@/components/ProfileSection.vue'
+import TableSection from '@/components/TableSection.vue'
+import logoImage from '@/assets/Logo.png'
+
+export default {
+  components: {
+    ProfileSection,
+    TableSection,
+  },
+  data() {
+    return {
+      logoImage,
+    }
+  },
+}
+</script>
+
+<style scoped>
+body {
+  font-family: 'Inter', sans-serif;
+}
+</style>
