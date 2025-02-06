@@ -10,11 +10,15 @@
       </div>
 
       <div class="user-list-body">
-        <div v-for="user in users" :key="user.email" class="user-row">
-          <div class="user-cell">{{ user.date }}</div>
-          <div class="user-cell">{{ user.name }}</div>
+        <div v-if="loading" class="loading-message">Loading users...</div>
+        <div v-else-if="error" class="error-message">
+          {{ error }}
+        </div>
+        <div v-else v-for="user in users" :key="user.email" class="user-row">
+          <div class="user-cell">{{ formatDate(user.dob.date) }}</div>
+          <div class="user-cell">{{ formatName(user.name) }}</div>
           <div class="user-cell">{{ user.gender }}</div>
-          <div class="user-cell">{{ user.country }}</div>
+          <div class="user-cell">{{ user.location.country }}</div>
           <div class="user-cell">{{ user.email }}</div>
         </div>
       </div>
@@ -34,58 +38,46 @@ export default {
   name: 'UserListSection',
   data() {
     return {
-      users: [
-        {
-          date: '14 Sep 2022',
-          name: 'Megan R. Johnson',
-          gender: 'Male',
-          country: 'Australia',
-          email: 'meganjohnson@gmail.com',
-        },
-        {
-          date: '14 Sep 2022',
-          name: 'Oscar Barnes',
-          gender: 'Male',
-          country: 'Germany',
-          email: 'oscarbarnes@gmail.com',
-        },
-        {
-          date: '14 Sep 2022',
-          name: 'Mateo Gilbert',
-          gender: 'Male',
-          country: 'New Zealand',
-          email: 'mateogilbert@gmail.com',
-        },
-        {
-          date: '14 Sep 2022',
-          name: 'Rosalie Young',
-          gender: 'Female',
-          country: 'Australia',
-          email: 'rosalieyoung@gmail.com',
-        },
-        {
-          date: '14 Sep 2022',
-          name: 'Blakely Patel',
-          gender: 'Female',
-          country: 'US',
-          email: 'blakelypatel@gmail.com',
-        },
-        {
-          date: '14 Sep 2022',
-          name: 'Aniyah James',
-          gender: 'Female',
-          country: 'Indonesia',
-          email: 'aniyahjames@gmail.com',
-        },
-        {
-          date: '14 Sep 2022',
-          name: 'Manuel Ward',
-          gender: 'Male',
-          country: 'Malaysia',
-          email: 'manuelward@gmail.com',
-        },
-      ],
+      users: [],
+      loading: false,
+      error: null,
     }
+  },
+  methods: {
+    async fetchUsers() {
+      this.loading = true
+      this.error = null
+      try {
+        const response = await fetch('https://randomuser.me/api/?results=20')
+        if (!response.ok) {
+          throw new Error('Failed to fetch users')
+        }
+        const data = await response.json()
+        this.users = data.results
+        console.log('this.users', this.users)
+      } catch (err) {
+        this.error = 'Error loading users. Please try again.'
+        console.error('Error:', err)
+      } finally {
+        this.loading = false
+      }
+    },
+    formatName(nameData) {
+      return nameData.first + ' ' + nameData.last
+    },
+    formatDate(dateString) {
+      return new Date(dateString).toLocaleDateString('en-GB', {
+        day: '2-digit',
+        month: 'short',
+        year: 'numeric',
+      })
+    },
+    capitalizeFirst(string) {
+      return string.charAt(0).toUpperCase() + string.slice(1)
+    },
+  },
+  mounted() {
+    this.fetchUsers()
   },
 }
 </script>
@@ -133,12 +125,18 @@ export default {
   display: grid;
   grid-template-columns: repeat(5, 1fr);
   padding: 1rem;
-  border-bottom: 1px solid #eee;
-  transition: background-color 0.2s;
+  background-color: white;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  transition: all 0.2s ease;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 }
 
 .user-row:hover {
   background-color: #f9f9f9;
+  border-color: #00bcd4;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
 .user-cell {
