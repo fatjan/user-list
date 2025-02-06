@@ -3,6 +3,11 @@
     <!-- Header -->
     <header class="header">
       <img :src="logoImage" alt="Kiratech-Logo" class="logo" />
+      <div class="header-icons">
+        <font-awesome-icon icon="bell" class="header-icon" />
+        <font-awesome-icon icon="gear" class="header-icon" />
+        <font-awesome-icon icon="right-from-bracket" class="header-icon" />
+      </div>
     </header>
 
     <!-- Profile Section -->
@@ -61,13 +66,27 @@ export default {
 }
 
 .header {
-  background-color: white;
-  padding: 1rem;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  position: relative;
+  display: flex;
+  align-items: center;
+  padding: 10px;
 }
 
 .logo {
-  height: 32px;
+  width: 120px;
+  margin-right: auto;
+}
+
+.header-icons {
+  display: flex;
+  align-items: center;
+}
+
+.header-icon {
+  margin-left: 25px;
+  font-size: 24px;
+  color: #333;
+  cursor: pointer;
 }
 
 .profile-section {
