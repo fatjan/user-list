@@ -2,11 +2,18 @@
   <div class="user-list-container">
     <div class="user-list">
       <div class="user-list-header">
-        <div class="header-cell">Date</div>
-        <div class="header-cell">Name</div>
-        <div class="header-cell">Gender</div>
-        <div class="header-cell">Country</div>
-        <div class="header-cell">Email</div>
+        <div
+          v-for="column in columns"
+          :key="column.key"
+          class="header-cell"
+          @click="sortBy(column.key)"
+          :class="{ sortable: true, sorted: sortKey === column.key }"
+        >
+          {{ column.label }}
+          <span class="sort-icon" v-if="sortKey === column.key">
+            {{ sortOrder === 'asc' ? '↑' : '↓' }}
+          </span>
+        </div>
       </div>
 
       <div class="user-list-body">
@@ -14,9 +21,9 @@
         <div v-else-if="error" class="error-message">
           {{ error }}
         </div>
-        <div v-else v-for="user in users" :key="user.email" class="user-row">
-          <div class="user-cell">{{ formatDate(user.dob.date) }}</div>
-          <div class="user-cell">{{ formatName(user.name) }}</div>
+        <div v-else v-for="user in sortedUsers" :key="user.email" class="user-row">
+          <div class="user-cell">{{ formatDate(user.registered.date) }}</div>
+          <div class="user-cell">{{ `${user.name.first} ${user.name.last}` }}</div>
           <div class="user-cell">{{ user.gender }}</div>
           <div class="user-cell">{{ user.location.country }}</div>
           <div class="user-cell">{{ user.email }}</div>
@@ -25,7 +32,7 @@
     </div>
 
     <div class="refresh-container">
-      <button class="btn btn-refresh">
+      <button class="btn btn-refresh" @click="refreshPage()">
         <span class="icon">↻</span>
         Refresh
       </button>
@@ -38,17 +45,73 @@ export default {
   name: 'UserListSection',
   data() {
     return {
+      sortKey: 'name',
+      sortOrder: 'asc',
+      columns: [
+        { key: 'date', label: 'Date' },
+        { key: 'name', label: 'Name' },
+        { key: 'gender', label: 'Gender' },
+        { key: 'country', label: 'Country' },
+        { key: 'email', label: 'Email' },
+      ],
+      page: 1,
       users: [],
       loading: false,
       error: null,
     }
   },
+  computed: {
+    sortedUsers() {
+      return [...this.users].sort((a, b) => {
+        let valueA, valueB
+
+        switch (this.sortKey) {
+          case 'date':
+            valueA = new Date(a.registered.date)
+            valueB = new Date(b.registered.date)
+            break
+          case 'name':
+            valueA = `${a.name.first} ${a.name.last}`.toLowerCase()
+            valueB = `${b.name.first} ${b.name.last}`.toLowerCase()
+            break
+          case 'gender':
+            valueA = a.gender.toLowerCase()
+            valueB = b.gender.toLowerCase()
+            break
+          case 'country':
+            valueA = a.location.country.toLowerCase()
+            valueB = b.location.country.toLowerCase()
+            break
+          case 'email':
+            valueA = a.email.toLowerCase()
+            valueB = b.email.toLowerCase()
+            break
+          default:
+            valueA = a[this.sortKey]
+            valueB = b[this.sortKey]
+        }
+
+        if (valueA === valueB) return 0
+
+        const comparison = valueA > valueB ? 1 : -1
+        return this.sortOrder === 'asc' ? comparison : -comparison
+      })
+    },
+  },
   methods: {
+    sortBy(key) {
+      if (this.sortKey === key) {
+        this.sortOrder = this.sortOrder === 'asc' ? 'desc' : 'asc'
+      } else {
+        this.sortKey = key
+        this.sortOrder = 'asc'
+      }
+    },
     async fetchUsers() {
       this.loading = true
       this.error = null
       try {
-        const response = await fetch('https://randomuser.me/api/?results=20')
+        const response = await fetch(`https://randomuser.me/api/?page=${this.page}&results=20`)
         if (!response.ok) {
           throw new Error('Failed to fetch users')
         }
@@ -62,9 +125,6 @@ export default {
         this.loading = false
       }
     },
-    formatName(nameData) {
-      return nameData.first + ' ' + nameData.last
-    },
     formatDate(dateString) {
       return new Date(dateString).toLocaleDateString('en-GB', {
         day: '2-digit',
@@ -74,6 +134,13 @@ export default {
     },
     capitalizeFirst(string) {
       return string.charAt(0).toUpperCase() + string.slice(1)
+    },
+    refreshPage() {
+      this.page += 1
+      if (this.page > 5) {
+        this.page = 1
+      }
+      this.fetchUsers()
     },
   },
   mounted() {
@@ -142,6 +209,16 @@ export default {
 .user-cell {
   font-size: 0.875rem;
   color: #333;
+}
+
+.loading-message,
+.error-message {
+  padding: 2rem;
+  text-align: center;
+  color: #666;
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 }
 
 .refresh-container {
