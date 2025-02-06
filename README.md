@@ -2,6 +2,11 @@
 
 This template should help get you started developing with Vue 3 in Vite.
 
+## Features
+
+- **Sortable Columns:** The table list can be sorted by any column by simply clicking on the column name.
+- **Refresh Functionality:** Clicking the refresh button/icon updates the list of users with the latest data.
+
 ## Recommended IDE Setup
 
 [VSCode](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur).
