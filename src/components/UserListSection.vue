@@ -111,7 +111,7 @@ export default {
       this.loading = true
       this.error = null
       try {
-        const response = await fetch(`https://randomuser.me/api/?page=${this.page}&results=20`)
+        const response = await fetch(`https://randomuser.me/api/?page=${this.page}&results=10`)
         if (!response.ok) {
           throw new Error('Failed to fetch users')
         }
@@ -233,7 +233,7 @@ export default {
 }
 
 .btn-refresh:hover {
-  background-color: #00acc1;
+  background-color: #9bd0d7;
 }
 
 @media (max-width: 768px) {

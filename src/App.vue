@@ -2,11 +2,13 @@
   <div class="container">
     <!-- Header -->
     <header class="header">
-      <img :src="logoImage" alt="Kiratech-Logo" class="logo" />
-      <div class="header-icons">
-        <font-awesome-icon icon="bell" class="header-icon" />
-        <font-awesome-icon icon="gear" class="header-icon" />
-        <font-awesome-icon icon="right-from-bracket" class="header-icon" />
+      <div class="header-content">
+        <img :src="logoImage" alt="Kiratech-Logo" class="logo" />
+        <div class="header-icons">
+          <font-awesome-icon icon="bell" class="header-icon" />
+          <font-awesome-icon icon="gear" class="header-icon" />
+          <font-awesome-icon icon="right-from-bracket" class="header-icon" />
+        </div>
       </div>
     </header>
 
@@ -23,7 +25,7 @@
           </div>
           <div class="profile-actions">
             <button class="btn btn-primary">
-              <span class="icon">✉</span>
+              <span class="icon"><font-awesome-icon icon="paper-plane" /></span>
               Send Message
             </button>
             <button class="btn btn-secondary">
@@ -66,10 +68,20 @@ export default {
 }
 
 .header {
+  background-color: white;
+  width: 100%;
+  box-sizing: border-box;
+  padding: 10px 0;
+}
+
+.header-content {
   position: relative;
   display: flex;
   align-items: center;
-  padding: 10px;
+  margin: 0 auto;
+  max-width: 1200px;
+  padding: 0 10px;
+  box-sizing: border-box;
 }
 
 .logo {
@@ -142,7 +154,7 @@ export default {
   gap: 0.5rem;
   padding: 0.5rem 1rem;
   border-radius: 6px;
-  border: none;
+  border: 2px solid white;
   cursor: pointer;
   font-size: 0.875rem;
   transition: background-color 0.2s;
@@ -154,7 +166,8 @@ export default {
 }
 
 .btn-primary:hover {
-  background-color: #f5f5f5;
+  background-color: #00bcd4;
+  color: white;
 }
 
 .btn-secondary {
@@ -164,7 +177,8 @@ export default {
 }
 
 .btn-secondary:hover {
-  background-color: rgba(255, 255, 255, 0.1);
+  background-color: #f5f5f5;
+  color: #00bcd4;
 }
 
 @media (max-width: 768px) {
