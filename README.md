@@ -1,6 +1,6 @@
 # user-list
 
-This template should help get you started developing with Vue 3 in Vite.
+A Vue 3 app built with Vite displaying a sortable and refreshable user list with detailed information.
 
 ## Features
 
