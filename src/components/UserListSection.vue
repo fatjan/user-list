@@ -66,7 +66,6 @@ export default {
         { key: 'gender', label: 'Gender' },
         { key: 'country', label: 'Country' },
         { key: 'email', label: 'Email' },
-        { key: 'cell', label: 'Show Details' },
       ],
       page: 1,
       users: [],
